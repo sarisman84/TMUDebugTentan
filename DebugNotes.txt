@@ -1,0 +1,45 @@
+Buglist:
+1 Render Creation initialized itself AFTER loading the game. 
+  (fixed by swapping initialization order, so first the renderer gets created and THEN gets the map and other elements loaded).
+
+2 Main Menu was initializing its menu options wrong. 
+  (fixed by switched objects to pointers and creating said elements in the heap. Furthermore, these menu option elements
+   now get destroyed should their parent Menu object get destroyed)
+
+3 World Selection was over engineered (double number counting for level select). 
+  (fixed by removed some unessesary for loops in the main menu class).
+
+4 MenuOptions saved std::string data to const char* which caused 
+  said data to get corrupted (or lost). (fixed by switching the container from const char* to std::string).
+
+5 On CIMG's Draw function, when called from the player, 
+  one of the SDL_RenderCopyEx calls had wrong parameters 
+  (fixed by using correct paramters: FLIP_VERTICAL -> FLIP_HORIZONTAL as well as 
+  removing an unnessesary rotationOffset that used iYOffset, it now uses a 0)
+
+6 On Goompas.cpp, when colliding with the player, the method didnt check if the current minion state was valid.
+  This caused the player to actually die no matter what state the goomba was. (fixed). Furthermore, there was a setter that was empty. 
+  I also populated said method.
+
+7 In Player.cpp, the method startRun had the wrong assigment variables in its tunnery if-statement.
+  this got fixed by switching their corresponding values (2 : 0 -> 0 : 2)
+
+8 In Player.cpp, the createFireBall() method had an invalid if statement that caused the player to gain the fireball buff without getting the flower.
+  This got fixed by correcting the faulty if-statement (powerLVL = 2 -> powerLVL == 2).
+
+9 In Map.cpp, when the players power lvl is higher than 0, a new BlockDebris needs to be populated onto a vector of pointers that contain said type.
+  However, the initialization of said type was wrong as it was created as a stack object that lived only on a certain moment in time. 
+  That caused the pointer that was saved onto the vector to become invalid. The fix was to create the instance in the heap instead, 
+  allowing it to survive up until its function is done.
+
+10 In Map.cpp, at line 8544, the numOfUses on said block was not been decremented.
+  This was fixed by adding back said decrementation when the setNumOfUses was called.
+  (setNumOfUses(getNumOfUses()) -> setNumOfUses(getNumOfUses() - 1))
+
+11.In Event.cpp, at line 352, the method setCurrentLevelID had an invalid argument assigned to it,
+   causing the level loader to not load the actual next level.
+   The fix for this was to increment the newCurrentLevel before said method was called. 
+
+12. In the Koppa.cpp, at line 175, the minionState variable was incorrectly set to 1 after already been set at that state beforehand.
+    This in turn caused the koopa enemy to still move as if it was still alive.
+    The fix here was to set the minionState to 2 instead.
